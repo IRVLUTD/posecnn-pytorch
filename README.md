@@ -6,7 +6,7 @@ PyTorch implementation of the PoseCNN and PoseRBPF framework.
 
 We introduce PoseCNN, a new Convolutional Neural Network for 6D object pose estimation. PoseCNN estimates the 3D translation of an object by localizing its center in the image and predicting its distance from the camera. The 3D rotation of the object is estimated by regressing to a quaternion representation. [arXiv](https://arxiv.org/abs/1711.00199), [Project](https://rse-lab.cs.washington.edu/projects/posecnn/)
 
-<p align="center"><img src="http://yuxng.github.io/PoseCNN.png" width="640" height="320"/></p>
+<p align="center"><img src="http://yuxng.github.io/Papers/2018/PoseCNN.png" width="640" height="320"/></p>
 
 ### License
 
