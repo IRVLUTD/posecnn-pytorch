@@ -79,7 +79,7 @@ TEST:
   DET_THRESHOLD: 0.9
   SCALES_BASE: !!python/tuple [1.0]
   CHECK_SIZE: False
-  VISUALIZE: False
+  VISUALIZE: True
   SYNTHESIZE: False
   POSE_REFINE: True
   ROS_CAMERA: D415
@@ -87,8 +87,8 @@ TEST:
 #  SYMMETRY: !!python/tuple [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1]
 #  CLASSES: !!python/tuple [0, 2, 5, 12, 14, 15, 39]
 #  SYMMETRY: !!python/tuple [0, 0, 0, 0, 0, 0, 1]
-  CLASSES: !!python/tuple [0, 3, 39]
-  SYMMETRY: !!python/tuple [0, 0, 1]
+  CLASSES: !!python/tuple [0, 2]
+  SYMMETRY: !!python/tuple [0, 0]
 #  GLOBAL_SEARCH: True
 #  CLASSES: !!python/tuple [0, 39]
 #  SYMMETRY: !!python/tuple [0, 1]

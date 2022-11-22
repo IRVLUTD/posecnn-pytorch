@@ -11,3 +11,5 @@ pyyaml
 future
 scipy
 Cython
+filterpy
+numba

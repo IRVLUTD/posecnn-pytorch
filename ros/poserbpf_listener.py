@@ -15,7 +15,7 @@ import tf.transformations as tra
 import matplotlib.pyplot as plt
 import posecnn_cuda
 
-from Queue import Queue
+# from queue import queue
 from random import shuffle
 from cv_bridge import CvBridge, CvBridgeError
 from scipy.spatial import distance_matrix as scipy_distance_matrix
@@ -121,7 +121,8 @@ class ImageListener:
         self.detection_pub = rospy.Publisher('poserbpf/%02d/info' % cfg.instance_id, DetectionList, queue_size=1)
 
         # subscriber for camera information
-        self.base_frame = 'measured/base_link'
+        # self.base_frame = 'measured/base_link'
+        self.base_frame = 'measured/camera_color_optical_frame'
         if cfg.TEST.ROS_CAMERA == 'D415':
             rgb_sub = message_filters.Subscriber('/camera/color/image_raw', Image, queue_size=1)
             depth_sub = message_filters.Subscriber('/camera/aligned_depth_to_color/image_raw', Image, queue_size=1)
@@ -495,7 +496,7 @@ class ImageListener:
                     secs = trans[1]
                     now = rospy.Time.now()
                     if abs(now.secs - secs) > 1.0:
-                        print 'posecnn pose for %s time out %f %f' % (source_frame, now.secs, secs)
+                        print('posecnn pose for %s time out %f %f' % (source_frame, now.secs, secs))
                         continue
                     roi = np.zeros((1, 7), dtype=np.float32)
                     roi[0, 0] = 0

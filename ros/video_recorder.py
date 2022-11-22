@@ -8,7 +8,7 @@ import scipy
 import scipy.io
 import cv2
 
-import mayavi.mlab as mlab
+# import mayavi.mlab as mlab
 
 import rospy
 from sensor_msgs.msg import Image, CameraInfo
