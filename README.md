@@ -126,6 +126,8 @@ Use python3. If ROS is needed, compile with python2.
     ```Shell
     # $GPU_ID can be 0, 1, etc.
     ./experiments/scripts/ros_poserbpf_ycb_object_test_subset_realsense_ycb.sh $GPU_ID $INSTANCE_ID
+    
+<p align="center"><img src="data/example.png" width="640" height="320"/></p>    
 
 ### Running ROS Kitchen System with YCB Objects
 1. Start Kinect for tracking kitchen
