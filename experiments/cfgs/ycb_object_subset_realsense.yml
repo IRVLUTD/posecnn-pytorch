@@ -79,7 +79,7 @@ TEST:
   DET_THRESHOLD: 0.9
   SCALES_BASE: !!python/tuple [1.0]
   CHECK_SIZE: False
-  VISUALIZE: True
+  VISUALIZE: False
   SYNTHESIZE: False
   POSE_REFINE: True
   ROS_CAMERA: D415
