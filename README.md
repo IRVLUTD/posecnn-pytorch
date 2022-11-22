@@ -114,7 +114,7 @@ Use python3. If ROS is needed, compile with python2.
     
 2. Install realsense SDK from [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
-### Running or Realsense cameras or Fetch
+### Running on Realsense cameras or Fetch
 
 1. Run PoseCNN detection for YCB objects
     ```Shell
