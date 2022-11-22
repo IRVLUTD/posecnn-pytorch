@@ -114,6 +114,19 @@ Use python3. If ROS is needed, compile with python2.
     
 2. Install realsense SDK from [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
+### Running or Realsense cameras or Fetch
+
+1. Run PoseCNN detection for YCB objects
+    ```Shell
+    # run posecnn for detection (20 YCB objects), $GPU_ID can be 0, 1, etc.
+    ./experiments/scripts/ros_ycb_object_test_subset_poserbpf_realsense_ycb.sh $GPU_ID $INSTANCE_ID
+    ```
+
+2. Run PoseBPRF for YCB objects
+    ```Shell
+    # $GPU_ID can be 0, 1, etc.
+    ./experiments/scripts/ros_poserbpf_ycb_object_test_subset_realsense_ycb.sh $GPU_ID $INSTANCE_ID
+
 ### Running ROS Kitchen System with YCB Objects
 1. Start Kinect for tracking kitchen
     ```Shell
