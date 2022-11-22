@@ -105,6 +105,14 @@ Use python3. If ROS is needed, compile with python2.
     ./experiments/scripts/ycb_video_test.sh $GPU_ID
 
     ```
+    
+### Realsense camera set up
+1. Install realsense ros package
+    ```Shell
+    sudo apt install ros-noetic-realsense2-camera
+    ```
+    
+2. Install realsense SDK from [here](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
 ### Running ROS Kitchen System with YCB Objects
 1. Start Kinect for tracking kitchen
