@@ -44,17 +44,17 @@ Use python3. If ROS is needed, compile with python2.
 
 2. Install Eigen from the Github source code [here](https://github.com/eigenteam/eigen-git-mirror)
 
-3. Install Sophus from the Github source code [here](https://github.com/yuxng/Sophus)
-
-4. Install python packages
+3. Install python packages
    ```Shell
    pip install -r requirement.txt
    ```
 
-5. Initialize the submodules in ycb_render
+4. Initialize the submodules
    ```Shell
    git submodule update --init --recursive
    ```
+   
+5. Install Sophus under the root folder
 
 6. Compile the new layers under $ROOT/lib/layers we introduce in PoseCNN
     ```Shell

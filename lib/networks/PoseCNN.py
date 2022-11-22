@@ -424,13 +424,13 @@ def posecnn(num_classes, num_units, data=None):
         print('model keys')
         print('=================================================')
         for k, v in model_dict.items():
-            print(k)
+            print(k, v.shape)
         print('=================================================')
 
         print('data keys')
         print('=================================================')
         for k, v in data.items():
-            print(k)
+            print(k, v.shape)
         print('=================================================')
 
         pretrained_dict = {k: v for k, v in data.items() if k in model_dict and v.size() == model_dict[k].size()}
