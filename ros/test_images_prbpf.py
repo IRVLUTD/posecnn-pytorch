@@ -139,6 +139,14 @@ class ImageListener:
             self.camera_frame = 'rgb_camera_link'
             self.target_frame = self.base_frame
             self.viz_pub = rospy.Publisher('/obj/mask_estimates/azure', MarkerArray, queue_size=1)
+        elif cfg.TEST.ROS_CAMERA  == 'Fetch':
+            self.base_frame = 'base_link'
+            rgb_sub = message_filters.Subscriber('/head_camera/rgb/image_raw', Image, queue_size=10)
+            depth_sub = message_filters.Subscriber('/head_camera/depth_registered/image_raw', Image, queue_size=10)
+            msg = rospy.wait_for_message('/head_camera/rgb/camera_info', CameraInfo)
+            self.camera_frame = 'head_camera_rgb_optical_frame'
+            self.target_frame = self.base_frame
+            self.viz_pub = rospy.Publisher('/obj/mask_estimates/azure', MarkerArray, queue_size=1)            
         else:
             # use kinect
             self.base_frame = '%s_rgb_optical_frame' % (cfg.TEST.ROS_CAMERA)

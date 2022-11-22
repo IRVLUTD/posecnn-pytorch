@@ -122,8 +122,8 @@ class ImageListener:
 
         # subscriber for camera information
         # self.base_frame = 'measured/base_link'
-        self.base_frame = 'measured/camera_color_optical_frame'
         if cfg.TEST.ROS_CAMERA == 'D415':
+            self.base_frame = 'measured/camera_color_optical_frame'        
             rgb_sub = message_filters.Subscriber('/camera/color/image_raw', Image, queue_size=1)
             depth_sub = message_filters.Subscriber('/camera/aligned_depth_to_color/image_raw', Image, queue_size=1)
             msg = rospy.wait_for_message('/camera/color/camera_info', CameraInfo)
@@ -138,8 +138,18 @@ class ImageListener:
                                      [0., 0., 0., 1.]], dtype=np.float32)
             '''
             self.T_delta = np.eye(4, dtype=np.float32)
+            
+        elif cfg.TEST.ROS_CAMERA  == 'Fetch':
+            self.base_frame = 'base_link'
+            rgb_sub = message_filters.Subscriber('/head_camera/rgb/image_raw', Image, queue_size=10)
+            depth_sub = message_filters.Subscriber('/head_camera/depth_registered/image_raw', Image, queue_size=10)
+            msg = rospy.wait_for_message('/head_camera/rgb/camera_info', CameraInfo)
+            self.camera_frame = 'head_camera_rgb_optical_frame'
+            self.target_frame = self.base_frame
+            self.forward_kinematics = True
 
         elif cfg.TEST.ROS_CAMERA == 'Azure':
+            self.base_frame = 'measured/base_link'        
             rgb_sub = message_filters.Subscriber('/k4a/rgb/image_raw', Image, queue_size=1)
             depth_sub = message_filters.Subscriber('/k4a/depth_to_rgb/image_raw', Image, queue_size=1)
             msg = rospy.wait_for_message('/k4a/rgb/camera_info', CameraInfo)
