@@ -331,10 +331,10 @@ class ImageListener:
                     detection = Detection()
                     detection.name = name
                     detection.score = self.pose_rbpf.rbpfs[i].roi[6]
-                    detection.roi.x1 = self.pose_rbpf.rbpfs[i].roi[2]
-                    detection.roi.y1 = self.pose_rbpf.rbpfs[i].roi[3]
-                    detection.roi.x2 = self.pose_rbpf.rbpfs[i].roi[4]
-                    detection.roi.y2 = self.pose_rbpf.rbpfs[i].roi[5]
+                    detection.roi.x1 = int(self.pose_rbpf.rbpfs[i].roi[2])
+                    detection.roi.y1 = int(self.pose_rbpf.rbpfs[i].roi[3])
+                    detection.roi.x2 = int(self.pose_rbpf.rbpfs[i].roi[4])
+                    detection.roi.y2 = int(self.pose_rbpf.rbpfs[i].roi[5])
                     detection.pose = msg
                     detections.detections.append(detection)
 

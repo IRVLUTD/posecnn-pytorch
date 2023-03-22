@@ -17,7 +17,7 @@ Panels:
         - /Pose1
         - /Input Depth1
       Splitter Ratio: 0.4948025047779083
-    Tree Height: 262
+    Tree Height: 353
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -137,42 +137,18 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 1
       Frames:
-        00_002_master_chef_can:
-          Value: true
-        00_002_master_chef_can_raw:
-          Value: true
         00_003_cracker_box:
           Value: false
         00_003_cracker_box_raw:
           Value: false
-        00_005_tomato_soup_can:
+        00_006_mustard_bottle:
           Value: true
-        00_005_tomato_soup_can_raw:
-          Value: true
-        00_008_pudding_box:
-          Value: true
-        00_008_pudding_box_raw:
-          Value: true
-        00_010_potted_meat_can:
-          Value: true
-        00_010_potted_meat_can_raw:
-          Value: true
-        00_019_pitcher_base:
-          Value: true
-        00_019_pitcher_base_raw:
+        00_006_mustard_bottle_raw:
           Value: true
         00_021_bleach_cleanser:
           Value: true
         00_021_bleach_cleanser_raw:
           Value: true
-        00_035_power_drill:
-          Value: true
-        00_035_power_drill_raw:
-          Value: true
-        00_036_wood_block:
-          Value: false
-        00_036_wood_block_raw:
-          Value: false
         00_037_scissors:
           Value: true
         00_037_scissors_raw:
@@ -220,11 +196,11 @@ Visualization Manager:
           Value: false
         laser_link:
           Value: false
-        map:
-          Value: false
         odom:
           Value: false
         posecnn/00_bleach_cleanser_01_roi:
+          Value: true
+        posecnn/00_bleach_cleanser_02_roi:
           Value: true
         posecnn/00_cracker_box_01_roi:
           Value: false
@@ -234,28 +210,14 @@ Visualization Manager:
           Value: false
         posecnn/00_large_marker_02_roi:
           Value: true
-        posecnn/00_master_chef_can_01_roi:
+        posecnn/00_large_marker_03_roi:
           Value: true
-        posecnn/00_pitcher_base_01_roi:
-          Value: true
-        posecnn/00_potted_meat_can_01_roi:
-          Value: true
-        posecnn/00_potted_meat_can_02_roi:
-          Value: true
-        posecnn/00_power_drill_01_roi:
-          Value: true
-        posecnn/00_pudding_box_01_roi:
+        posecnn/00_mustard_bottle_01_roi:
           Value: true
         posecnn/00_scissors_01_roi:
           Value: true
         posecnn/00_scissors_02_roi:
           Value: true
-        posecnn/00_tomato_soup_can_01_roi:
-          Value: true
-        posecnn/00_wood_block_01_roi:
-          Value: false
-        posecnn/00_wood_block_02_roi:
-          Value: false
         poserbpf/00_003_cracker_box_00:
           Value: true
         r_gripper_finger_link:
@@ -283,127 +245,90 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          odom:
-            base_link:
-              00_002_master_chef_can:
+        odom:
+          base_link:
+            00_003_cracker_box:
+              {}
+            00_003_cracker_box_raw:
+              {}
+            00_006_mustard_bottle:
+              {}
+            00_006_mustard_bottle_raw:
+              {}
+            00_021_bleach_cleanser:
+              {}
+            00_021_bleach_cleanser_raw:
+              {}
+            00_037_scissors:
+              {}
+            00_037_scissors_raw:
+              {}
+            00_040_large_marker:
+              {}
+            00_040_large_marker_raw:
+              {}
+            00_052_extra_large_clamp:
+              {}
+            00_052_extra_large_clamp_raw:
+              {}
+            estop_link:
+              {}
+            l_wheel_link:
+              {}
+            laser_link:
+              {}
+            posecnn/00_bleach_cleanser_01_roi:
+              {}
+            posecnn/00_bleach_cleanser_02_roi:
+              {}
+            posecnn/00_cracker_box_01_roi:
+              {}
+            posecnn/00_extra_large_clamp_01_roi:
+              {}
+            posecnn/00_large_marker_01_roi:
+              {}
+            posecnn/00_large_marker_02_roi:
+              {}
+            posecnn/00_large_marker_03_roi:
+              {}
+            posecnn/00_mustard_bottle_01_roi:
+              {}
+            posecnn/00_scissors_01_roi:
+              {}
+            posecnn/00_scissors_02_roi:
+              {}
+            poserbpf/00_003_cracker_box_00:
+              {}
+            r_wheel_link:
+              {}
+            torso_fixed_link:
+              {}
+            torso_lift_link:
+              bellows_link:
                 {}
-              00_002_master_chef_can_raw:
+              bellows_link2:
                 {}
-              00_003_cracker_box:
-                {}
-              00_003_cracker_box_raw:
-                {}
-              00_005_tomato_soup_can:
-                {}
-              00_005_tomato_soup_can_raw:
-                {}
-              00_008_pudding_box:
-                {}
-              00_008_pudding_box_raw:
-                {}
-              00_010_potted_meat_can:
-                {}
-              00_010_potted_meat_can_raw:
-                {}
-              00_019_pitcher_base:
-                {}
-              00_019_pitcher_base_raw:
-                {}
-              00_021_bleach_cleanser:
-                {}
-              00_021_bleach_cleanser_raw:
-                {}
-              00_035_power_drill:
-                {}
-              00_035_power_drill_raw:
-                {}
-              00_036_wood_block:
-                {}
-              00_036_wood_block_raw:
-                {}
-              00_037_scissors:
-                {}
-              00_037_scissors_raw:
-                {}
-              00_040_large_marker:
-                {}
-              00_040_large_marker_raw:
-                {}
-              00_052_extra_large_clamp:
-                {}
-              00_052_extra_large_clamp_raw:
-                {}
-              estop_link:
-                {}
-              l_wheel_link:
-                {}
-              laser_link:
-                {}
-              posecnn/00_bleach_cleanser_01_roi:
-                {}
-              posecnn/00_cracker_box_01_roi:
-                {}
-              posecnn/00_extra_large_clamp_01_roi:
-                {}
-              posecnn/00_large_marker_01_roi:
-                {}
-              posecnn/00_large_marker_02_roi:
-                {}
-              posecnn/00_master_chef_can_01_roi:
-                {}
-              posecnn/00_pitcher_base_01_roi:
-                {}
-              posecnn/00_potted_meat_can_01_roi:
-                {}
-              posecnn/00_potted_meat_can_02_roi:
-                {}
-              posecnn/00_power_drill_01_roi:
-                {}
-              posecnn/00_pudding_box_01_roi:
-                {}
-              posecnn/00_scissors_01_roi:
-                {}
-              posecnn/00_scissors_02_roi:
-                {}
-              posecnn/00_tomato_soup_can_01_roi:
-                {}
-              posecnn/00_wood_block_01_roi:
-                {}
-              posecnn/00_wood_block_02_roi:
-                {}
-              poserbpf/00_003_cracker_box_00:
-                {}
-              r_wheel_link:
-                {}
-              torso_fixed_link:
-                {}
-              torso_lift_link:
-                bellows_link:
-                  {}
-                bellows_link2:
-                  {}
-                head_pan_link:
-                  head_tilt_link:
-                    head_camera_link:
-                      head_camera_depth_frame:
-                        head_camera_depth_optical_frame:
-                          {}
-                      head_camera_rgb_frame:
-                        head_camera_rgb_optical_frame:
-                          {}
-                shoulder_pan_link:
-                  shoulder_lift_link:
-                    upperarm_roll_link:
-                      elbow_flex_link:
-                        forearm_roll_link:
-                          wrist_flex_link:
-                            wrist_roll_link:
-                              gripper_link:
-                                l_gripper_finger_link:
-                                  {}
-                                r_gripper_finger_link:
-                                  {}
+              head_pan_link:
+                head_tilt_link:
+                  head_camera_link:
+                    head_camera_depth_frame:
+                      head_camera_depth_optical_frame:
+                        {}
+                    head_camera_rgb_frame:
+                      head_camera_rgb_optical_frame:
+                        {}
+              shoulder_pan_link:
+                shoulder_lift_link:
+                  upperarm_roll_link:
+                    elbow_flex_link:
+                      forearm_roll_link:
+                        wrist_flex_link:
+                          wrist_roll_link:
+                            gripper_link:
+                              l_gripper_finger_link:
+                                {}
+                              r_gripper_finger_link:
+                                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -575,6 +500,156 @@ Visualization Manager:
       Update Interval: 0
       Value: true
       Visual Enabled: true
+    - Class: moveit_rviz_plugin/PlanningScene
+      Enabled: true
+      Move Group Namespace: ""
+      Name: PlanningScene
+      Planning Scene Topic: move_group/monitored_planning_scene
+      Robot Description: robot_description
+      Scene Geometry:
+        Scene Alpha: 0.8999999761581421
+        Scene Color: 50; 230; 50
+        Scene Display Time: 0.009999999776482582
+        Show Scene Geometry: true
+        Voxel Coloring: Z-Axis
+        Voxel Rendering: Occupied Voxels
+      Scene Robot:
+        Attached Body Color: 150; 50; 150
+        Links:
+          All Links Enabled: true
+          Expand Joint Details: false
+          Expand Link Details: false
+          Expand Tree: false
+          Link Tree Style: Links in Alphabetic Order
+          base_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          bellows_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          bellows_link2:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          elbow_flex_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          estop_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          forearm_roll_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          gripper_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          head_camera_depth_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          head_camera_depth_optical_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          head_camera_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          head_camera_rgb_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          head_camera_rgb_optical_frame:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+          head_pan_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          head_tilt_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          l_gripper_finger_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          l_wheel_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          laser_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          r_gripper_finger_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          r_wheel_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          shoulder_lift_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          shoulder_pan_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          torso_fixed_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          torso_lift_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          upperarm_roll_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wrist_flex_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          wrist_roll_link:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+        Robot Alpha: 1
+        Show Robot Collision: false
+        Show Robot Visual: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -603,7 +678,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.1674602031707764
+      Distance: 2.7076668739318848
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -619,9 +694,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4352031350135803
+      Pitch: 0.5902031064033508
       Target Frame: <Fixed Frame>
-      Yaw: 3.982292413711548
+      Yaw: 0.7991085648536682
     Saved: ~
 Window Geometry:
   Displays:
@@ -637,7 +712,7 @@ Window Geometry:
     collapsed: false
   PoseRBPF Pose:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001f000000191fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000021900000191000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000002dc00000191fc0200000004fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001a0050006f00730065005200420050004600200050006f007300650100000219000001910000001600fffffffb0000000a005600690065007700730000000367000000c1000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000740000001d6fc0100000004fb000000160049006e00700075007400200049006d0061006700650100000000000002000000008600fffffffb000000160049006e00700075007400200044006500700074006801000002060000024c0000008700fffffffb000000220050006f007300650043004e004e00200044006500740065006300740069006f006e0100000458000002e8000000bb00fffffffb0000000a00560069006500770073030000004e00000080000002e100000197000000030000074000000046fc0100000002fb0000000800540069006d0065010000000000000740000003bc00fffffffb0000000800540069006d00650100000000000004500000000000000000000002680000019100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000400000000000001f0000001ecfc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c00610079007301000001cb000001ec000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c0000026100000001000002dc000001ecfc0200000004fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000001a0050006f00730065005200420050004600200050006f0073006501000001cb000001ec0000001600fffffffb0000000a005600690065007700730000000367000000c1000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b20000000000000000000000020000073800000188fc0100000004fb000000160049006e00700075007400200049006d0061006700650100000000000001fe0000008600fffffffb000000160049006e0070007500740020004400650070007400680100000204000002480000008700fffffffb000000220050006f007300650043004e004e00200044006500740065006300740069006f006e0100000452000002e6000000bb00fffffffb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073800000039fc0100000002fb0000000800540069006d0065010000000000000738000003bc00fffffffb0000000800540069006d0065010000000000000450000000000000000000000260000001ec00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -646,6 +721,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 1856
-  X: 64
+  Width: 1848
+  X: 1992
   Y: 0
