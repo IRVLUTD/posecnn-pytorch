@@ -72,7 +72,7 @@ def test_image(network, pose_rbpf, dataset, im_color, im_depth=None, im_index=No
         if cfg.TRAIN.POSE_REG:
             out_label, out_vertex, rois, out_pose, out_quaternion = network(inputs, dataset.input_labels, meta_data, \
                 dataset.input_extents, dataset.input_gt_boxes, dataset.input_poses, dataset.input_points, dataset.input_symmetry)
-            labels = out_label.detach().cpu().numpy()[0]
+            labels = out_label[0]
 
             # combine poses
             rois = rois.detach().cpu().numpy()
@@ -80,7 +80,7 @@ def test_image(network, pose_rbpf, dataset, im_color, im_depth=None, im_index=No
             out_quaternion = out_quaternion.detach().cpu().numpy()
             num = rois.shape[0]
             poses = out_pose.copy()
-            for j in xrange(num):
+            for j in range(num):
                 cls = int(rois[j, 1])
                 if cls >= 0:
                     qt = out_quaternion[j, 4*cls:4*cls+4]
@@ -100,10 +100,11 @@ def test_image(network, pose_rbpf, dataset, im_color, im_depth=None, im_index=No
             poses = poses[index, :]
            
             # optimize depths
+            cls_render_ids = None
             if cfg.TEST.POSE_REFINE and im_depth is not None:
-                poses = refine_pose(labels, im_depth, rois, poses, dataset)
+                poses_refined = refine_pose(labels, im_depth, rois, poses, dataset)
             else:
-                poses_tmp, poses = optimize_depths(rois, poses, dataset._points_all, dataset._intrinsic_matrix)
+                poses_refined = None
 
         else:
             out_label, out_vertex, rois, out_pose = network(inputs, dataset.input_labels, meta_data, \
@@ -414,7 +415,7 @@ def vis_test(dataset, im, im_depth, label, rois, poses, poses_refined, im_pose, 
             plot += 1
             ax.set_title('predicted poses')
             plt.imshow(im)
-            for j in xrange(rois.shape[0]):
+            for j in range(rois.shape[0]):
                 cls = int(rois[j, 1])
                 print(classes[cls], rois[j, -1])
                 if cls > 0 and rois[j, -1] > cfg.TEST.DET_THRESHOLD:
