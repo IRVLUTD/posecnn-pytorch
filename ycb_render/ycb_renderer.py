@@ -1,6 +1,5 @@
 import sys
 import ctypes
-import torch
 import time
 from pprint import pprint
 from PIL import Image
@@ -27,6 +26,7 @@ except:
 
 MAX_NUM_OBJECTS = 3
 from glutils.utils import colormap
+import torch
 
 
 def loadTexture(path):
