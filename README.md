@@ -2,15 +2,9 @@
 
 PyTorch implementation of the PoseCNN and PoseRBPF framework.
 
-### Introduction
-
-We introduce PoseCNN, a new Convolutional Neural Network for 6D object pose estimation. PoseCNN estimates the 3D translation of an object by localizing its center in the image and predicting its distance from the camera. The 3D rotation of the object is estimated by regressing to a quaternion representation. [arXiv](https://arxiv.org/abs/1711.00199), [Project](https://rse-lab.cs.washington.edu/projects/posecnn/)
-
-<p align="center"><img src="http://yuxng.github.io/Papers/2018/PoseCNN.png" width="640" height="320"/></p>
-
 ### License
 
-PoseCNN is released under the MIT License (refer to the LICENSE file for details).
+PoseCNN-PyTorch is released under the NVIDIA Source Code License (refer to the LICENSE file for details).
 
 ### Citation
 
@@ -38,7 +32,12 @@ If you find the package is useful in your research, please consider citing:
 
 ### Installation
 
-Use python3. If ROS is needed, compile with python2.
+Use python3 with Conda.
+
+0. Create a conda environment
+   ```Shell
+   conda create -n posecnn
+   ```
 
 1. Install [PyTorch](https://pytorch.org/)
 
@@ -72,6 +71,11 @@ Use python3. If ROS is needed, compile with python2.
     ```Shell
     cd $ROOT/ycb_render
     sudo python setup.py develop
+    ```
+    
+9. Install ROS in conda
+    ```Shell
+    conda install -c conda-forge rospkg empy
     ```
 
 ### Download
@@ -173,5 +177,3 @@ Use python3. If ROS is needed, compile with python2.
     # $GPU_ID can be 0, 1, etc.
     ./experiments/scripts/ros_poserbpf_ycb_object_test_subset_realsense.sh $GPU_ID $INSTANCE_ID
     ```
-
-
