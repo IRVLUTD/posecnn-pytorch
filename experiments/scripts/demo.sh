@@ -13,6 +13,6 @@ echo Logging output to "$LOG"
 time ./tools/test_images.py --gpu 0 \
   --imgdir data/Images/kitchen \
   --network posecnn \
-  --pretrained data/checkpoints/vgg16_ycb_object_pose_dgx_2_epoch_16.checkpoint.pth \
+  --pretrained data/checkpoints/ycb_object/vgg16_ycb_object_epoch_16.checkpoint.pth \
   --dataset ycb_object_test \
   --cfg experiments/cfgs/ycb_object_subset_demo.yml

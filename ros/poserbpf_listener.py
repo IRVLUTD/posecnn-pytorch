@@ -118,6 +118,7 @@ class ImageListener:
         self.listener = tf.TransformListener()
         rospy.sleep(3.0)
         self.pose_pub = rospy.Publisher('poserbpf_image' + self.suffix, ROS_Image, queue_size=1)
+        self.pose_pub_1 = rospy.Publisher('poserbpf_image_render' + self.suffix, ROS_Image, queue_size=1)
         self.detection_pub = rospy.Publisher('poserbpf/%02d/info' % cfg.instance_id, DetectionList, queue_size=1)
 
         # subscriber for camera information
@@ -588,7 +589,7 @@ class ImageListener:
             rois_est, input_seg = self.check_object_size(input_rgb, input_depth, input_seg, rois_est)
 
         # call pose estimation function
-        save, image_disp = self.process_image_multi_obj(input_rgb, input_depth, input_seg, rois_est)
+        save, image_disp, image_disp_1 = self.process_image_multi_obj(input_rgb, input_depth, input_seg, rois_est)
 
         if self.grasp_mode:
             print('****************************Grasping Mode (%s) ****************************' % (self.dataset._classes_all[cfg.TEST.CLASSES[self.grasp_cls]]))
@@ -604,6 +605,13 @@ class ImageListener:
             pose_msg.encoding = 'rgb8'
             self.pose_pub.publish(pose_msg)
             self.image_disp = image_disp
+            
+            pose_msg = self.cv_bridge.cv2_to_imgmsg(image_disp_1)
+            pose_msg.header.stamp = rospy.Time.now()
+            pose_msg.header.frame_id = self.input_frame_id
+            pose_msg.encoding = 'rgb8'
+            self.pose_pub_1.publish(pose_msg)
+            
         # '''
 
         # save data
@@ -739,12 +747,16 @@ class ImageListener:
         # '''
         if image_tensor is not None:
             image_disp = (0.4 * image_bgr[:, :, (2, 1, 0)] + 0.6 * image_tensor) * 255
+            image_disp_1 = image_tensor * 255
         else:
             image_disp = 0.4 * image_bgr[:, :, (2, 1, 0)] * 255
+            image_disp_1 = image_disp
         image_disp = torch.clamp(image_disp, 0, 255).byte().cpu().numpy()
+        image_disp_1 = torch.clamp(image_disp_1, 0, 255).byte().cpu().numpy()        
         # '''
         # image_disp = None
-        return save & good_initial, image_disp
+        
+        return save & good_initial, image_disp, image_disp_1
 
 
     # save data

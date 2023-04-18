@@ -71,7 +71,7 @@ class ImageListener:
         # initialize a node
         rospy.init_node("image_listener")
         rgb_sub = message_filters.Subscriber('/head_camera/rgb/image_raw', Image, queue_size=2)
-        rgb_pose_sub = message_filters.Subscriber('/poserbpf_image_00', Image, queue_size=2)        
+        rgb_pose_sub = message_filters.Subscriber('/poserbpf_image_render_00', Image, queue_size=2)        
         depth_sub = message_filters.Subscriber('/head_camera/depth_registered/image_raw', Image, queue_size=2)        
         # depth_sub = message_filters.Subscriber('/camera/depth_registered/sw_registered/image_rect_raw', Image, queue_size=2)
         
@@ -146,7 +146,7 @@ class PoseListener:
 
         self.listener = tf.TransformListener()
         self.base_frame = 'base_link'
-
+	
     def ready(self):
         if self.msg is None:
             print("[SENSOR] No message received on topic", self.topic_name)
@@ -265,10 +265,11 @@ if __name__ == '__main__':
     # pose listener
     topic_name = '/poserbpf/00/info'
     pose_listener = PoseListener(topic_name)
-    
+    os.makedirs(listener.outdir, exist_ok=True)
+
     while 1:
         if listener.input_rgb is not None:
-            
+            print("1")
             # save object poses
             model_names, object_poses, object_names = pose_listener.get_object_poses()
             meta = {'object_names': object_names, 'poses': object_poses,
@@ -280,4 +281,8 @@ if __name__ == '__main__':
             # save images
             listener.save_data()
             
+            # sleep for 0.25 seconds
             break
+            time.sleep(0.25)
+            
+            # break
