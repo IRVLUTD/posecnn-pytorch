@@ -129,6 +129,15 @@ Use python3. If ROS is needed, compile with python2.
     
 <p align="center"><img src="data/example.png" width="640" height="320"/></p>    
 
+**Changing the set of objects to be used for pose detection:**
+- See the object ordering in `lib/datasets/ycb_object.py` defined under `YCBObject.__init__()` under the var name `self._classes_all`
+- The order in which object names appear is used in the config file while determining which classes to track and do pose estimation for.
+  - Note the python list/tuple is *zero-indexed*
+- Config file: `experiments/cfgs/ycb_object_subset_realsense.yml`
+  - The objects to be used are specified under `TEST.CLASSES` which is tuple with indices corresponding to the above list `self._classes_all`
+  - Example: If your object set is `003, 005, 007`, then the tuple specififed in yaml file will be: `[2, 4, 6]`.
+  - You can keep `TEST.SYMMETRY` to be a list with all zeros and matching the length of `TEST.CLASSES` in the yaml file.
+
 ### Running ROS Kitchen System with YCB Objects
 1. Start Kinect for tracking kitchen
     ```Shell
