@@ -674,7 +674,7 @@ class ImageListener:
                             assigned_rois[index[j]] = 1
 
         elif num_rbpfs == 0 and num_rois == 0:
-            return False, None
+            return False, None, None
 
         # initialize new object
         if num_rois > 0:
