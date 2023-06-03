@@ -88,10 +88,6 @@ def parse_args():
     Parse input arguments
     """
     parser = argparse.ArgumentParser(description='YCB rendering')
-    parser.add_argument('-s', '--scene_id', dest='scene_id',
-                        help='Scene ID',
-                        required=True, type=int)
-
     parser.add_argument('--gpu', dest='gpu_id',
                         help='GPU device id to use [0]',
                         default=0, type=int)
@@ -109,11 +105,17 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-    scene_id = args.scene_id
     root = '../data'
     height = 480
     width = 640
     
+    # Setup data dir
+    segdata_base = os.path.join(root, "final_scenes", "segmasks")
+    os.makedirs(segdata_base, exist_ok=True)
+    # Load SCENE IDS
+    with open(os.path.join(root, "final_scenes", "scene_ids.txt"), "r") as f:
+        selected_scene_ids = [int(x) for x in f.read().split()]
+
     # update camera intrinsics
     ROS_FETCH_K = [554.254691191187, 0.0, 320.5, 0.0, 554.254691191187, 240.5, 0.0, 0.0, 1.0]
     fx = ROS_FETCH_K[0]
@@ -142,16 +144,6 @@ if __name__ == '__main__':
     print(texture_paths)
     print(colors)
     
-    # load object names and poses from scene metadata
-    # scene_id = 10
-    meta_fname = "meta-%06d.mat" % scene_id
-    meta_fpath = os.path.join(root, "final_scenes", "metadata", meta_fname)
-    print(meta_fpath)
-    meta = scipy.io.loadmat(meta_fpath)
-    object_names = [o.strip() for o in meta['object_names']]
-    poses = meta['poses']
-    print(object_names)
-    print(poses, poses.shape)
 
     # setup renderer
     renderer = YCBRenderer(width=width, height=height, render_marker=False)
@@ -167,57 +159,102 @@ if __name__ == '__main__':
     renderer.set_camera_default()
     renderer.set_projection_matrix(width, height, fx, fy, px, py, znear, zfar)
 
-    # rendering to tensor
-    image_tensor = torch.cuda.FloatTensor(height, width, 4).detach()
-    seg_tensor = torch.cuda.FloatTensor(height, width, 4).detach()
+    for scene_id in selected_scene_ids:
+        print(f"SCENE: {scene_id}----------------------------------------------------------------------------")
+        # Setup scene dir
+        scene_dir = os.path.join(segdata_base, f"scene_{scene_id}")
+        os.makedirs(scene_dir, exist_ok=True)
 
-    # set object poses
-    poses_all = []
-    cls_indexes = []
-    for i in range(len(object_names)):
-        # note, poses quat in meta are already in (wxyz) format
-        qt = poses[i, :]
-        # 1. convert (q,t) to camera frame by multiplying the inverse 
-        # 2. convert (q,t) to standard format i.e wxyz format
-        qt_ros = convert_standard_to_rospose(qt)
-        RT_obj_base = ros_qt_to_rt(qt_ros[3:], qt_ros[:3])
-        RT_obj_cam = RT_base_to_cam @ RT_obj_base
-        q_cam, t_cam = rt_to_ros_qt(RT_obj_cam)
-        qt_cam_standard = convert_rospose_to_standard([*t_cam, *q_cam])
-        # Finally append to the list of all poses with correct tf
-        poses_all.append(qt_cam_standard)
-        index = classes_all.index(object_names[i])
-        cls_indexes.append(index)
-        
-    renderer.set_poses(poses_all)
-    renderer.set_light_pos([0, 0, 0])
+        # load object names and poses from scene metadata
+        meta_fname = "meta-%06d.mat" % scene_id
+        meta_fpath = os.path.join(root, "final_scenes", "metadata", meta_fname)
+        meta = scipy.io.loadmat(meta_fpath)
+        object_names = [o.strip() for o in meta['object_names']]
+        poses = meta['poses']
+        print(object_names)
+        # Store poses in a dict
+        meta_poses = {}
+        for idx, obj in enumerate(object_names):
+            meta_poses[obj] = meta["poses"][idx]
 
-    # rendering
-    renderer.render(cls_indexes, image_tensor, seg_tensor)
-    image_tensor = image_tensor.flip(0)
-    seg_tensor = seg_tensor.flip(0)
-    frame = [image_tensor.cpu().numpy(), seg_tensor.cpu().numpy()]
+        # Get the object orders for this scene 
+        random_order = str(meta["random"][0]).split(",")
+        nearest_order = str(meta["nearest_first"][0]).split(",")
 
-    im_syn = frame[0][:, :, :3] * 255
-    im_syn = np.clip(im_syn, 0, 255)
-    im_syn = im_syn.astype(np.uint8)
+        for order in ["random", "nearest_first"]:
+            ordering = random_order if order == "random" else nearest_order
+            print(f"Scene {scene_id} | Order: {order}")
+            print(f"Ordering: {ordering}")
+            remain_objs = set(ordering)
+            removed_objs = set()
 
-    im_label = frame[1][:, :, :3] * 255
-    im_label = np.clip(im_label, 0, 255)
-    im_label = im_label.astype(np.uint8)
+            for step, obj_to_remove in enumerate(ordering):
+                print(f"Step: {step} | Objects removed : {removed_objs}")
+                print(f"Step: {step} | Objects in scene: {remain_objs}")
+                # rendering to tensor
+                image_tensor = torch.cuda.FloatTensor(height, width, 4).detach()
+                seg_tensor = torch.cuda.FloatTensor(height, width, 4).detach()
 
-    # show images
-    import matplotlib.pyplot as plt
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 2, 1)
-    plt.imshow(im_syn)
-    # plt.plot(x1, y1, 'bo')
-    ax.set_title('render')
+                # set object poses
+                poses_all = []
+                cls_indexes = []
+                # for i in range(len(object_names)):
+                for obj_in_scene in remain_objs:
+                    # note, poses quat in meta are already in (wxyz) format
+                    # qt = poses[i, :]
+                    qt = meta_poses[obj_in_scene]
+                    # 1. convert (q,t) to camera frame by multiplying the inverse 
+                    # 2. convert (q,t) to standard format i.e wxyz format
+                    qt_ros = convert_standard_to_rospose(qt)
+                    RT_obj_base = ros_qt_to_rt(qt_ros[3:], qt_ros[:3])
+                    RT_obj_cam = RT_base_to_cam @ RT_obj_base
+                    q_cam, t_cam = rt_to_ros_qt(RT_obj_cam)
+                    qt_cam_standard = convert_rospose_to_standard([*t_cam, *q_cam])
+                    # Finally append to the list of all poses with correct tf
+                    poses_all.append(qt_cam_standard)
+                    index = classes_all.index(obj_in_scene)
+                    cls_indexes.append(index)
+                    
+                renderer.set_poses(poses_all)
+                renderer.set_light_pos([0, 0, 0])
 
-    ax = fig.add_subplot(1, 2, 2)
-    plt.imshow(im_label)
-    ax.set_title('label')
-    # plt.show()
-    plot_fname = os.path.join(root, "final_scenes", f"test_{scene_id}.png")
-    plt.savefig(plot_fname)
+                # rendering
+                renderer.render(cls_indexes, image_tensor, seg_tensor)
+                image_tensor = image_tensor.flip(0)
+                seg_tensor = seg_tensor.flip(0)
+                frame = [image_tensor.cpu().numpy(), seg_tensor.cpu().numpy()]
+
+                im_syn = frame[0][:, :, :3] * 255
+                im_syn = np.clip(im_syn, 0, 255)
+                im_syn = im_syn.astype(np.uint8)
+
+                im_label = frame[1][:, :, :3] * 255
+                im_label = np.clip(im_label, 0, 255)
+                im_label = im_label.astype(np.uint8)
+
+                # save images
+                import matplotlib.pyplot as plt
+                rendersyn_fname = os.path.join(scene_dir, f"render_ord-{order}_step-{step}.png")
+                plt.imsave(rendersyn_fname, im_syn)
+                label_fname = os.path.join(scene_dir, f"gtseg_ord-{order}_step-{step}.png")
+                plt.imsave(label_fname, im_label)
+
+                fig = plt.figure()
+                ax = fig.add_subplot(1, 2, 1)
+                plt.imshow(im_syn)
+                # plt.plot(x1, y1, 'bo')
+                ax.set_title('render')
+
+                ax = fig.add_subplot(1, 2, 2)
+                plt.imshow(im_label)
+                ax.set_title('label')
+                # plt.show()
+                plot_fname = os.path.join(scene_dir, f"comparison_ord-{order}_step-{step}.png")
+                plt.savefig(plot_fname)
+                print(f"Step: {step} | Objects to remove: {obj_to_remove}")
+                print("-------")
+                remain_objs.remove(obj_to_remove)
+                removed_objs.add(obj_to_remove)
+            print("=========================")
+        print("---------------------------------------------------------------------------------------------\n")
 
