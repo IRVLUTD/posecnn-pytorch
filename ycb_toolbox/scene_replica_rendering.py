@@ -25,11 +25,73 @@ class_colors_all = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (255, 
                     (0, 64, 0), (64, 0, 0), (0, 0, 64), (64, 64, 0)]
 
 
+def inverse_transform(trans):
+    """
+    Computes the inverse of 4x4 transform.
+
+    Arguments:
+        trans {np.ndarray} -- 4x4 transform.
+
+    Returns:
+        [np.ndarray] -- inverse 4x4 transform
+    """
+    rot = trans[:3, :3]
+    t = trans[:3, 3]
+    rot = np.transpose(rot)
+    t = -np.matmul(rot, t)
+    output = np.zeros((4, 4), dtype=np.float32)
+    output[3][3] = 1
+    output[:3, :3] = rot
+    output[:3, 3] = t
+    return output
+
+
+def convert_rospose_to_standard(pose_ros):
+    """Converts (posn, x,y,z,w) pose to (posn, w,x,y,z) pose"""
+    posn = pose_ros[:3]
+    ros_qt = pose_ros[3:]
+    quat = [ros_qt[-1], ros_qt[0], ros_qt[1], ros_qt[2]]
+    return [*posn, *quat]
+
+
+def convert_standard_to_rospose(pose_s):
+    """Converts (posn, w,x,y,z) pose to ROS format (posn, x,y,z,w) pose"""
+    posn = pose_s[:3]
+    q_s = pose_s[3:]
+    quat = [q_s[1], q_s[2], q_s[3], q_s[0]]
+    return [*posn, *quat]
+
+
+def ros_qt_to_rt(rot, trans):
+    qt = np.zeros((4,), dtype=np.float32)
+    qt[0] = rot[3]
+    qt[1] = rot[0]
+    qt[2] = rot[1]
+    qt[3] = rot[2]
+    obj_T = np.eye(4)
+    obj_T[:3, :3] = quat2mat(qt)
+    obj_T[:3, 3] = trans
+
+    return obj_T
+
+
+def rt_to_ros_qt(rt):
+    quat = mat2quat(rt[:3, :3])
+    quat = [quat[1], quat[2], quat[3], quat[0]]
+    trans = rt[:3, 3]
+
+    return quat, trans
+
+
 def parse_args():
     """
     Parse input arguments
     """
     parser = argparse.ArgumentParser(description='YCB rendering')
+    parser.add_argument('-s', '--scene_id', dest='scene_id',
+                        help='Scene ID',
+                        required=True, type=int)
+
     parser.add_argument('--gpu', dest='gpu_id',
                         help='GPU device id to use [0]',
                         default=0, type=int)
@@ -47,15 +109,25 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-
+    scene_id = args.scene_id
     root = '../data'
     height = 480
     width = 640
     
     # update camera intrinsics
-    intrinsic_matrix = np.array([[500, 0, 320],
-                                 [0, 500, 240],
-                                 [0, 0, 1]])
+    ROS_FETCH_K = [554.254691191187, 0.0, 320.5, 0.0, 554.254691191187, 240.5, 0.0, 0.0, 1.0]
+    fx = ROS_FETCH_K[0]
+    cx = ROS_FETCH_K[2]
+    fy = ROS_FETCH_K[4]
+    cy = ROS_FETCH_K[5]
+    intrinsic_matrix = np.array([[fx, 0, cx],
+                                 [0, fy, cy],
+                                 [0,  0, 1]])
+    # intrinsic_matrix = np.array([[500, 0, 320],
+    #                              [0, 500, 240],
+    #                              [0, 0, 1]])
+    camera_pose = np.load(os.path.join(root, "final_scenes", "cam_pose.npy"))
+    RT_base_to_cam = inverse_transform(camera_pose) # transform points in base frame to camera frame
 
     obj_paths = []
     texture_paths = []
@@ -71,11 +143,12 @@ if __name__ == '__main__':
     print(colors)
     
     # load object names and poses from scene metadata
-    scene_id = 1
-    filename = '%s/final_scenes/metadata/meta-%06d.mat' % (root, scene_id)
-    print(filename)
-    meta = scipy.io.loadmat(filename)
-    object_names = meta['object_names']
+    # scene_id = 10
+    meta_fname = "meta-%06d.mat" % scene_id
+    meta_fpath = os.path.join(root, "final_scenes", "metadata", meta_fname)
+    print(meta_fpath)
+    meta = scipy.io.loadmat(meta_fpath)
+    object_names = [o.strip() for o in meta['object_names']]
     poses = meta['poses']
     print(object_names)
     print(poses, poses.shape)
@@ -101,10 +174,18 @@ if __name__ == '__main__':
     # set object poses
     poses_all = []
     cls_indexes = []
-    for i in len(object_names):        
+    for i in range(len(object_names)):
+        # note, poses quat in meta are already in (wxyz) format
         qt = poses[i, :]
-        poses_all.append(qt)
-        
+        # 1. convert (q,t) to camera frame by multiplying the inverse 
+        # 2. convert (q,t) to standard format i.e wxyz format
+        qt_ros = convert_standard_to_rospose(qt)
+        RT_obj_base = ros_qt_to_rt(qt_ros[3:], qt_ros[:3])
+        RT_obj_cam = RT_base_to_cam @ RT_obj_base
+        q_cam, t_cam = rt_to_ros_qt(RT_obj_cam)
+        qt_cam_standard = convert_rospose_to_standard([*t_cam, *q_cam])
+        # Finally append to the list of all poses with correct tf
+        poses_all.append(qt_cam_standard)
         index = classes_all.index(object_names[i])
         cls_indexes.append(index)
         
@@ -130,10 +211,13 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax = fig.add_subplot(1, 2, 1)
     plt.imshow(im_syn)
-    plt.plot(x1, y1, 'bo')
+    # plt.plot(x1, y1, 'bo')
     ax.set_title('render')
 
     ax = fig.add_subplot(1, 2, 2)
     plt.imshow(im_label)
     ax.set_title('label')
-    plt.show()
+    # plt.show()
+    plot_fname = os.path.join(root, "final_scenes", f"test_{scene_id}.png")
+    plt.savefig(plot_fname)
+
