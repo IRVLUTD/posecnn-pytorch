@@ -226,11 +226,11 @@ if __name__ == '__main__':
 
                 im_syn = frame[0][:, :, :3] * 255
                 im_syn = np.clip(im_syn, 0, 255)
-                im_syn = im_syn.astype(np.uint8)
+                im_syn = np.around(im_syn).astype(np.uint8)
 
                 im_label = frame[1][:, :, :3] * 255
                 im_label = np.clip(im_label, 0, 255)
-                im_label = im_label.astype(np.uint8)
+                im_label = np.around(im_label).astype(np.uint8)
 
                 # save images
                 import matplotlib.pyplot as plt
