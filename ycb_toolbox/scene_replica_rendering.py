@@ -4,13 +4,9 @@ import _init_paths
 import argparse
 import os, sys
 import torch
-from transforms3d.quaternions import mat2quat, quat2mat, qmult
-from transforms3d.euler import euler2quat, quat2euler
-from fcn.config import cfg, cfg_from_file, get_output_dir
+from transforms3d.quaternions import mat2quat, quat2mat
 import scipy.io
-import cv2
 import numpy as np
-import math
 from utils.se3 import *
 from ycb_renderer import YCBRenderer
 
@@ -87,16 +83,16 @@ def parse_args():
     """
     Parse input arguments
     """
-    parser = argparse.ArgumentParser(description='YCB rendering')
-    parser.add_argument('--gpu', dest='gpu_id',
-                        help='GPU device id to use [0]',
-                        default=0, type=int)
-    parser.add_argument('--cad', dest='cad_name',
-                        help='name of the CAD files',
-                        default=None, type=str)
-    parser.add_argument('--pose', dest='pose_name',
-                        help='name of the pose files',
-                        default=None, type=str)
+    parser = argparse.ArgumentParser(description='YCB rendering for SceneReplica')
+    parser.add_argument('--data_root', '-d',
+                        help='Path to data dir',
+                        default="../data/", type=str)
+    parser.add_argument('--scene_replica_dir', '-s', 
+                        help='name of dir with scene replica metadata',
+                        default="scenereplica_files", type=str)
+    parser.add_argument('--camera', '-c', 
+                        help='camera type: {fetch, topdown}',
+                        default="fetch", type=str)
 
     args = parser.parse_args()
     return args
@@ -105,15 +101,22 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-    root = '../data'
+    root = args.data_root
+    sr_dir = args.scene_replica_dir
+    cam_type = args.camera
+    if cam_type not in {"fetch", "topdown"}:
+        print("[ERROR] Unsupported camera type! Exiting...")
+        exit(0)
+
     height = 480
     width = 640
-    
+
     # Setup data dir
-    segdata_base = os.path.join(root, "final_scenes", "segmasks")
+    segdata_savedir = "segmasks_fetch" if cam_type == "fetch" else "segmasks_topdown"
+    segdata_base = os.path.join(root, sr_dir, segdata_savedir)
     os.makedirs(segdata_base, exist_ok=True)
     # Load SCENE IDS
-    with open(os.path.join(root, "final_scenes", "scene_ids.txt"), "r") as f:
+    with open(os.path.join(root, sr_dir, "scene_ids.txt"), "r") as f:
         selected_scene_ids = [int(x) for x in f.read().split()]
 
     # update camera intrinsics
@@ -125,10 +128,16 @@ if __name__ == '__main__':
     intrinsic_matrix = np.array([[fx, 0, cx],
                                  [0, fy, cy],
                                  [0,  0, 1]])
-    # intrinsic_matrix = np.array([[500, 0, 320],
-    #                              [0, 500, 240],
-    #                              [0, 0, 1]])
-    camera_pose = np.load(os.path.join(root, "final_scenes", "cam_pose.npy"))
+
+    campose_f = "RT_cam_fetch.npy" if cam_type == "fetch" else "RT_cam_virtual.npy"
+    camera_pose = np.load(os.path.join(root, sr_dir, campose_f))
+    if cam_type == "topdown":
+        # This is the case for our custom defined topdown camera
+        # For some reason, need to flip the y,z axis dirns for correct rendering?
+        # Else the camera faces in opposite direction and nothing is seen!
+        # Note, this YCBRenderer was made for Fetch Camera, where the RT_camera Z faces the scene (unlike openGL)
+        camera_pose[:, [1,2]] *= -1 
+    
     RT_base_to_cam = inverse_transform(camera_pose) # transform points in base frame to camera frame
 
     obj_paths = []
@@ -159,6 +168,9 @@ if __name__ == '__main__':
     renderer.set_camera_default()
     renderer.set_projection_matrix(width, height, fx, fy, px, py, znear, zfar)
 
+    print("\n\n----------------------------------------------------------------------------\n")
+    print("Starting the rendering process")
+    print("sARGS:", args)
     for scene_id in selected_scene_ids:
         print(f"SCENE: {scene_id}----------------------------------------------------------------------------")
         # Setup scene dir
@@ -167,7 +179,7 @@ if __name__ == '__main__':
 
         # load object names and poses from scene metadata
         meta_fname = "meta-%06d.mat" % scene_id
-        meta_fpath = os.path.join(root, "final_scenes", "metadata", meta_fname)
+        meta_fpath = os.path.join(root, sr_dir, "metadata", meta_fname)
         meta = scipy.io.loadmat(meta_fpath)
         object_names = [o.strip() for o in meta['object_names']]
         poses = meta['poses']
