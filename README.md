@@ -80,7 +80,7 @@ Use python3 with Conda.
 
 ### Download
 
-- 3D models of YCB Objects we used [here](https://drive.google.com/file/d/1PTNmhd-eSq0fwSPv0nvQN8h_scR1v-UJ/view?usp=sharing) (3G). Save under $ROOT/data or use a symbol link.
+- 3D models of YCB Objects we used [here](https://utdallas.box.com/s/ls01mxdyai1ui6lflejk1n8x86ve20oy) (3G). Save under $ROOT/data or use a symbol link.
 
 - PoseCNN checkpoints from [here](https://utdallas.box.com/s/g0qnbs615kcizcqvys6pn96dr251m0lk)
 
